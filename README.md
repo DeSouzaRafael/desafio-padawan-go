@@ -1,68 +1,63 @@
-# Vaga Padawan
+# Desafio Codigo - *REST API* que faça conversão de moedas em Golang.
 
-Genesis está em busca de um(a) jedi para seu time de tecnologia.
+Para iniciar, rode o comando `docker-compose up` para subir o container do projeto.
 
-# Para quem é essa vaga?
+Estarei deixando o arquivo .env com uma pré configuração setada.
 
-Essa vaga é para você que está cansado de trabalhar sem ter uma motivação e deseja em trabalhar com produtos inovadores.
+Estou utilizando como framework o Echo, base de dados Mysql com o [GORM](https://gorm.io/).
 
-# Requisitos
+## Rotas:
 
+* GetExchange:
 
-1. Programar em Golang.
-2. Entender de Mysql.
-3. Entender o básico de docker.
-4. Entender o básico de grpc.
+    Aqui você envia o valor que deseja fazer a conversão, a moeda de origem, moeda para conversão e a cotação.
 
- 
+    http://localhost:8000/exchange/{amount}/{from}/{to}/{rate} 
+  
+    http://localhost:8000/exchange/10/BRL/USD/4.50
 
-# Sobre a Genesis
+    * Resposta:
 
-Genesis é uma conta digital PJ com um superApp para empresa.
-Produtos da Genesis:
+      `code:200`
 
-1. Api para integração com todos os produtos .
-2. Conta Digital PJ.
-3. Gift  card digital.
-4. Emissão de nota fiscal.
-5. Sistema de pagamento com criptomoeda.
-6. Cambio.
-7. Moedas estrangeiras.
+      ```json 
+      {
+        "valorConvertido": 45,
+        "simboloMoeda": "$"
+      }
+      ```
 
+    * Adicional:
+        Caso não saiba o valor de cotação da moeda para enviar como o parametro **rate** na url, basta enviar o valor **0** que a partir da moeda eu faço uma integração com a [AwesomeApi](https://docs.awesomeapi.com.br/api-de-moedas) buscando essa cotação!
 
-# Passo a passo
+# 
+* GetConsults:
 
-1. Fazer teste
-2.  Cadastrar seus dados e o link do seu teste.
-3.  [https://xbs70gdcwqd.typeform.com/to/j4JO5Lmz](https://xbs70gdcwqd.typeform.com/to/YaODTyyp)
-4. Entrevista via meet
+    Listagem com os logs de todas as requisições de conversão feitas em GetExchange.
 
+    http://localhost:8000/consults
 
-# Teste
+* Resposta:
 
-Desenvolva uma **REST API** que faça conversão de moedas.
+    `code:200`
 
-**Especifícações**:
-
-* A URL da requisição deve seguir o seguinte formato:
-    * http://localhost:8000/exchange/{amount}/{from}/{to}/{rate}
-    * http://localhost:8000/exchange/10/BRL/USD/4.50
-* A resposta deve seguir o seguinte formato:
-   ```json
-   {
-     "valorConvertido": 45,
-     "simboloMoeda": "$"
-   }
-   
-   * Conversões:
-    * De Real para Dólar;
-    * De Dólar para Real;
-    * De Real para Euro;
-    * De Euro para Real;
-    * De BTC para Dolar;
-    * De BTC para Real;
-   
-   * Salvar os dados no banco de dados:
-    * criar uma rotina para salvar o dados para consultas futuras
-
-   ```
+    ```json
+    [
+	    {
+	    	"id": 1,
+	    	"amount": 10,
+	    	"from": "BRL",
+	    	"to": "USD",
+	    	"rate": 4.5,
+	    	"createdAt": "2023-07-13T07:16:13.802Z"
+	    },
+	    {
+	    	"id": 2,
+	    	"amount": 100,
+	    	"from": "USD",
+	    	"to": "BRL",
+	    	"rate": 4.81895,
+	    	"createdAt": "2023-07-13T07:16:34.113Z"
+	    }
+    ]
+    ```

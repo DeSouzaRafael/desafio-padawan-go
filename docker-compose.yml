@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - MYSQL_ROOT_HOST=${DB_HOST}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - network-stack
+      
+  api:
+    container_name: api
+    build:
+      context: /
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+    restart: on-failure
+    volumes:
+      - ./:/coinConversion/
+    depends_on:
+      - mysql
+    env_file:
+      - .env
+    networks:
+      - network-stack
+
+networks:
+  network-stack:
+    driver: bridge
